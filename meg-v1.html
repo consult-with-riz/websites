@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meghaan Lurtz — Right question, right time (Literary warm)</title>
+<meta name="description" content="Dr. Meghaan Lurtz — the psychology of financial planning. Pitch prototype." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{--bg:#FBF7EF;--paper:#FFFDF8;--ink:#2B2622;--body:#5A5046;--muted:#9A8E7C;--accent:#B5683C;--accent2:#7C8B6F;--line:#E8DFD0;--radius:14px;--fh:'Fraunces',Georgia,serif;--fb:'Lora',Georgia,serif;--fm:'DM Mono',monospace;}
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--fb);background:var(--bg);color:var(--body);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .fh{font-family:var(--fh)} .fm{font-family:var(--fm)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:660px;margin:0 auto;padding:clamp(40px,8vh,86px) 24px 90px}
+  .wide{max-width:760px}
+  h1{font-family:var(--fh);font-weight:600;color:var(--ink);letter-spacing:-0.01em;line-height:1.04}
+  h2{font-family:var(--fh);font-weight:600;color:var(--ink);letter-spacing:-0.01em;line-height:1.1}
+  .sec-label{font-family:var(--fm);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .sec{margin-top:58px}
+  /* masthead */
+  .mast{text-align:center;display:flex;flex-direction:column;align-items:center}
+  .pfp{width:104px;height:104px;border-radius:50%;object-fit:cover;border:1px solid var(--line);
+      background:var(--paper);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:24px}
+  .pfp span{font-family:var(--fh);font-size:2.2rem;color:var(--accent)}
+  .mast h1{font-size:clamp(2.3rem,6.5vw,3.4rem)}
+  .mast .cred{font-family:var(--fm);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-top:14px}
+  .mast .pos{font-family:var(--fh);font-style:italic;font-size:clamp(1.15rem,2.6vw,1.45rem);color:var(--ink);margin-top:18px;max-width:24ch}
+  .mast .lede{color:var(--body);font-size:1.05rem;margin-top:16px;max-width:46ch}
+  .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:30px}
+  .btn{font-family:var(--fm);font-size:.8rem;letter-spacing:.04em;border-radius:var(--radius);padding:12px 22px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.primary:hover{filter:brightness(1.06);color:#fff}
+  /* affiliations / press band */
+  .band, .press{margin-top:54px;padding:24px 0;display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center}
+  .chip{font-family:var(--fm);font-size:.76rem;letter-spacing:.03em;color:var(--body)}
+  .chip.dot:after{content:"\00b7";margin-left:22px;color:var(--muted)}
+  .chip:last-child.dot:after{content:""}
+  .press .chip{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.08em}
+  /* about */
+  .about p{font-size:1.08rem;color:var(--body);line-height:1.7}
+  .about .quote{font-family:var(--fh);font-style:italic;font-size:clamp(1.3rem,3vw,1.7rem);color:var(--ink);margin-top:24px;line-height:1.3}
+  /* topics */
+  .topics{display:flex;flex-direction:column}
+  .topic{padding:18px 0;border-bottom:1px solid var(--line)}
+  .topic:last-child{border-bottom:none}
+  .topic .tt{font-family:var(--fh);font-size:1.22rem;color:var(--ink);font-weight:500}
+  .topic .td{color:var(--body);margin-top:5px;font-size:.98rem}
+  /* writing */
+  .posts{display:flex;flex-direction:column}
+  .post{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:15px 0;border-bottom:1px solid var(--line);transition:padding-left .2s}
+  .post:hover{padding-left:8px} .post:hover .pt{color:var(--accent)}
+  .pt{font-size:1.06rem;color:var(--ink);font-weight:500;transition:color .2s}
+  .pd{font-family:var(--fm);font-size:.74rem;color:var(--muted);white-space:nowrap}
+  .ph-note{font-family:var(--fm);font-size:.7rem;color:var(--muted);margin-top:14px;opacity:.8;line-height:1.5}
+  /* subscribe */
+  .sub{margin-top:58px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:30px}
+  .sub h2{font-size:1.4rem;margin-bottom:4px}
+  .sub p{color:var(--body);font-size:.95rem;margin-bottom:18px}
+  .sub-embed{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:120px}
+  .sub-embed iframe{width:100%;border:0;display:block}
+  footer{margin-top:56px;text-align:center;font-family:var(--fm);font-size:.72rem;color:var(--muted);letter-spacing:.03em;line-height:1.7}
+  /* concept B — question hero */
+  .qhero{min-height:78vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .qhero .eyebrow{font-family:var(--fm);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:26px}
+  .qhero .q{font-family:var(--fh);font-weight:500;font-size:clamp(1.7rem,4.5vw,2.7rem);color:var(--ink);line-height:1.2;
+      width:100%;min-height:6em;display:flex;align-items:center;justify-content:center;text-align:center}
+  .qhero .q #q{display:block;max-width:20ch;transition:opacity .5s ease,transform .5s ease}
+  .qhero .q #q.out{opacity:0;transform:translateY(10px)}
+  .qhero .qbtn{margin-top:34px;font-family:var(--fm);font-size:.78rem;letter-spacing:.06em;background:none;border:1px solid var(--line);
+      border-radius:var(--radius);padding:12px 22px;cursor:pointer;color:var(--ink);transition:all .2s}
+  .qhero .qbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .qhero .qfoot{margin-top:22px;font-family:var(--fb);font-style:italic;color:var(--muted);font-size:.95rem;max-width:34ch}
+  /* concept C — bearing-witness stages */
+  .stage{min-height:92vh;display:flex;flex-direction:column;justify-content:center;max-width:620px;margin:0 auto;padding:0 24px}
+  .stage .k{font-family:var(--fm);font-size:.8rem;letter-spacing:.2em;color:var(--accent);margin-bottom:20px}
+  .stage .big{font-family:var(--fh);font-weight:600;font-size:clamp(2rem,5.5vw,3.4rem);color:var(--ink);line-height:1.1;letter-spacing:-0.01em}
+  .stage .sub{font-family:var(--fb);font-style:italic;font-size:clamp(1.05rem,2.4vw,1.35rem);color:var(--body);margin-top:20px;max-width:34ch;line-height:1.5}
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s ease,transform .9s ease}
+  .reveal.in{opacity:1;transform:none}
+  .scrollcue{text-align:center;font-family:var(--fm);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);padding:30px 0 10px}
+  .about p:first-of-type::first-letter{font-family:var(--fh);font-size:3.1rem;line-height:.8;float:left;margin:6px 10px 0 0;color:var(--accent)}
+  @media(max-width:480px){.post{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<header class="qhero"><p class="eyebrow">a question, at the right time</p><div class="q fh"><span id="q">What is your earliest money memory?</span></div><button class="qbtn fm" id="qbtn">Ask me another &rarr;</button><p class="qfoot">The work isn&rsquo;t the question. It&rsquo;s knowing when to ask it &mdash; and being ready for the answer.</p></header><div class="mast" style="margin-top:10px"><h1 class="fh" style="font-size:clamp(1.9rem,5vw,2.6rem)">Meghaan Lurtz</h1><p class="cred">Ph.D., FBS&trade; &middot; Partner, Shaping Wealth</p></div><div class="band"><span class="chip dot">Partner, Shaping Wealth</span><span class="chip dot">Kansas State University</span><span class="chip dot">Columbia University</span><span class="chip dot">Financial Therapy Association</span><span class="chip dot">Kitces.com</span><span class="chip dot">Financial Psychology Institute Europe</span></div><section class="sec about"><p class="sec-label">About</p><p>Dr. Meghaan Lurtz is a global expert on the psychology of financial planning and the intersection of money and wellbeing. A Partner at Shaping Wealth, she teaches Financial Psychology at Columbia University and advanced financial planning at Kansas State, and is a past president of the Financial Therapy Association. She writes at Kitces.com and in her newsletter, (Less) Lonely Money.</p><p class="quote">&ldquo;The best questions aren&rsquo;t clever. They&rsquo;re kind.&rdquo;</p></section><section class="sec"><p class="sec-label">Speaking</p><h2 style="margin-bottom:18px">Sessions &amp; keynotes</h2><div class="topics"><div class="topic"><div class="tt">The Art of the Question</div><div class="td">What to ask a client, and — just as important — when to ask it.</div></div><div class="topic"><div class="tt">Holding Space Without Overreach</div><div class="td">Financial therapy in practice: depth, pacing, and the window of tolerance.</div></div><div class="topic"><div class="tt">Money Scripts & Money Memories</div><div class="td">The psychology beneath the plan, and where our beliefs about money begin.</div></div><div class="topic"><div class="tt">Bearing Witness</div><div class="td">Listening as the advisor's core skill — and why it's the real magic.</div></div></div><div style="margin-top:24px"><a class="btn primary" href="https://www.kitces.com/speaking/meghaan-lurtz/" target="_blank" rel="noopener">Book Meghaan to speak</a></div></section><section class="sec"><p class="sec-label">Writing</p><h2 style="margin-bottom:18px">(Less) Lonely Money</h2><div class="posts"><a class="post" href="https://meghaanlurtz.substack.com/p/good-question-wrong-time" target="_blank" rel="noopener"><span class="pt">Good Question. Wrong Time.</span><span class="pd">Sep 2025</span></a><a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">When money starts to feel like it's yours</span><span class="pd">&mdash; placeholder</span></a><a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">The vulnerability hangover in the first meeting</span><span class="pd">&mdash; placeholder</span></a><a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">Start with agency, not origin story</span><span class="pd">&mdash; placeholder</span></a></div><p class="ph-note">Placeholders marked above &mdash; in the build, render posts natively from the Substack RSS (meghaanlurtz.substack.com/feed) with canonical tags back to Substack.</p></section><div class="sec"><p class="sec-label">As seen in</p><div class="press" style="margin-top:0"><span class="chip dot">Wall Street Journal</span><span class="chip dot">The New York Times</span><span class="chip dot">BBC</span><span class="chip dot">New York Magazine</span><span class="chip dot">MDRT</span><span class="chip dot">CFPB</span></div></div><section class="sub" id="subscribe"><h2 class="fh">Subscribe to (Less) Lonely Money</h2><p>Essays on money, emotion, and the conversations that change outcomes.</p><div class="sub-embed"><iframe src="https://meghaanlurtz.substack.com/embed" height="150" scrolling="no" title="Subscribe"></iframe></div></section><footer>&copy; <span id="yr"></span> Meghaan R. Lurtz, Ph.D. &middot; (Less) Lonely Money<br>Placeholder pitch prototype &mdash; swap headshot &amp; verify links before publishing.</footer>
+</div>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+(function(){
+  var QS=["What is your earliest money memory?","When did money start to feel like it was yours to manage?","Tell me about your first job.","When did you first feel confident &mdash; or unsure &mdash; about a money decision?","What&rsquo;s the first money decision you remember making on your own?","If I gave you $100 as a kid, what would you have done with it?","Who taught you the most about money &mdash; and what stuck?"];
+  var q=document.getElementById('q'), btn=document.getElementById('qbtn'), i=0;
+  btn.addEventListener('click',function(){
+    q.classList.add('out');
+    setTimeout(function(){ i=(i+1)%QS.length; q.innerHTML=QS[i]; q.classList.remove('out'); },480);
+  });
+})();
+
+</script>
+</body>
+</html>
