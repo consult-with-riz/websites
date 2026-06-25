@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riz — automation operator</title>
+<meta name="description" content="Riz (Rizwan Mahmood) — AI workflow automation, built by someone who actually ran ops. Co-founder of Soch." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#22332C; --cream:#F3ECDD; --body:#4A4A4A; --muted:#8A857B;
+    --coral:#EA6A47; --coral-d:#CE5430; --amber:#D79A36; --line:#E7E0D2;
+    --paper:#FBF8F0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"DM Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;
+      -webkit-font-smoothing:antialiased}
+  .serif{font-family:"Playfair Display",Georgia,serif}
+  .mono{font-family:"DM Mono",monospace}
+  a{color:inherit}
+
+  .wrap{max-width:640px;margin:0 auto;padding:clamp(48px,9vh,96px) 24px 80px}
+
+  /* header */
+  .top{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .pfp{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line);
+      background:var(--cream);display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:22px}
+  .pfp span{font-family:"Playfair Display",serif;font-size:2.2rem;color:var(--coral)}
+  h1{font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(2.1rem,6vw,2.8rem);letter-spacing:-.02em;line-height:1}
+  .bio{color:var(--body);font-size:1.05rem;margin-top:14px;max-width:30ch}
+  .bio b{color:var(--ink);font-weight:600}
+
+  /* socials */
+  .socials{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px}
+  .slink{font-family:"DM Mono",monospace;font-size:.8rem;letter-spacing:.02em;text-decoration:none;color:var(--body);
+      border:1px solid var(--line);border-radius:999px;padding:8px 15px;background:#fff;transition:all .2s;cursor:pointer}
+  .slink:hover{border-color:var(--coral);color:var(--coral);transform:translateY(-1px)}
+  .slink.copied{border-color:var(--coral);color:var(--coral)}
+
+  /* section heading */
+  .sec{margin-top:64px}
+  .sec h2{font-family:"Playfair Display",serif;font-weight:500;font-size:1.7rem;letter-spacing:-.01em;margin-bottom:20px}
+
+  /* timeline */
+  .tl{list-style:none;display:flex;flex-direction:column;gap:2px}
+  .tl li{display:flex;gap:16px;align-items:baseline;padding:9px 0;border-bottom:1px solid rgba(231,224,210,.6)}
+  .tl li:last-child{border-bottom:none}
+  .tl .yr{font-family:"DM Mono",monospace;font-size:.82rem;color:var(--coral);min-width:54px;flex-shrink:0}
+  .tl .ev{color:var(--body)}
+  .tl .ev b{color:var(--ink);font-weight:600}
+
+  /* writing */
+  .posts{display:flex;flex-direction:column}
+  .post{display:flex;justify-content:space-between;align-items:baseline;gap:18px;text-decoration:none;
+      padding:16px 0;border-bottom:1px solid rgba(231,224,210,.7);transition:padding-left .2s}
+  .post:hover{padding-left:8px}
+  .post:hover .pt{color:var(--coral)}
+  .pt{font-size:1.05rem;color:var(--ink);font-weight:500;transition:color .2s}
+  .pd{font-family:"DM Mono",monospace;font-size:.76rem;color:var(--muted);flex-shrink:0;white-space:nowrap}
+  .ph-note{font-family:"DM Mono",monospace;font-size:.72rem;color:var(--muted);margin-top:14px;opacity:.75}
+
+  /* subscribe */
+  .sub{margin-top:64px;background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:32px}
+  .sub h3{font-family:"Playfair Display",serif;font-weight:500;font-size:1.35rem;margin-bottom:6px}
+  .sub p{color:var(--body);font-size:.95rem;margin-bottom:18px}
+  .subrow{display:flex;gap:8px;flex-wrap:wrap}
+  .subrow input{flex:1;min-width:180px;font-family:"DM Sans",sans-serif;font-size:.95rem;padding:12px 15px;
+      border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);outline:none}
+  .subrow input:focus{border-color:var(--coral)}
+  .subrow button{font-family:"DM Mono",monospace;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;
+      background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:12px 22px;cursor:pointer;transition:background .2s}
+  .subrow button:hover{background:var(--coral)}
+  .sub .after{font-size:.92rem;color:var(--body);margin-top:14px}
+  .sub .after a{color:var(--coral)}
+
+  footer{margin-top:54px;text-align:center;font-family:"DM Mono",monospace;font-size:.74rem;color:var(--muted);letter-spacing:.04em}
+
+  @media(max-width:480px){
+    .tl li{flex-direction:column;gap:2px}
+    .post{flex-direction:column;gap:4px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HEADER ============ -->
+  <header class="top">
+    <!-- swap the <span> for: <img class="pfp" src="pfp.jpg" alt="Riz"> -->
+    <div class="pfp"><span>R</span></div>
+    <h1 class="serif">Riz</h1>
+    <p class="bio">AI workflow automation, built by someone who actually ran ops. <b>Co-founder @ Soch.</b> Ex-Wise, ex-Bolt.</p>
+
+    <nav class="socials">
+      <a class="slink" href="https://www.linkedin.com/in/consult-withriz" target="_blank" rel="noopener">LinkedIn</a>
+      <a class="slink" href="https://youtube.com/@VibeWithRiz" target="_blank" rel="noopener">YouTube</a>
+      <a class="slink" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener">Substack</a>
+      <a class="slink" href="https://instagram.com/etz.riz" target="_blank" rel="noopener">Instagram</a>
+      <a class="slink" href="https://withsoch.com" target="_blank" rel="noopener">Soch</a>
+      <button class="slink" id="copyEmail" data-email="riz@withsoch.com">Copy email</button>
+    </nav>
+  </header>
+
+  <!-- ============ TIMELINE ============ -->
+  <section class="sec">
+    <ul class="tl">
+      <li><span class="yr mono">2025</span><span class="ev">Co-founded <b>Soch</b> — AI automation for pre-seed to Series A. 10–20 hrs/week back per team in 60 days.</span></li>
+      <li><span class="yr mono">2025</span><span class="ev">At <b>Wise</b>, built reconciliation automation hitting <b>~92% straight-through matching</b>; month-end close 8 → 3 days.</span></li>
+      <li><span class="yr mono">2024</span><span class="ev">Ran Operational Excellence across <b>15 countries</b> at Bolt — logistics, regulatory, public policy.</span></li>
+      <li><span class="yr mono">2023</span><span class="ev">A/B-tested delivery fees at Bolt for a <b>$2.1M</b> revenue lift in six months.</span></li>
+      <li><span class="yr mono">2022</span><span class="ev">Cut courier cost from 21% → 14% of GMV at Bolt — <b>saving $3.9M</b> across 20 countries.</span></li>
+      <li><span class="yr mono">2021</span><span class="ev">Shipped a certified ELD solution for the Canadian market at <b>Motive</b>.</span></li>
+      <li><span class="yr mono">2020</span><span class="ev">Launched a healthcare dispatch service with the Ministry of Health KPK at <b>Careem</b> — <b>3 min → 20 sec</b>.</span></li>
+      <li><span class="yr mono">2017</span><span class="ev">Qualified <b>ACCA</b>; BSc Applied Accounting, Oxford Brookes. Earlier: Cambridge.</span></li>
+      <li><span class="yr mono">2015</span><span class="ev">Founded a fashion label (Perbal Clothing) and ran it for two years.</span></li>
+      <li><span class="yr mono">now</span><span class="ev">Doing stand-up, building a podcast, and writing about the work below.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============ WRITING ============ -->
+  <section class="sec">
+    <h2 class="serif">Writing</h2>
+    <div class="posts" id="posts">
+      <!-- PLACEHOLDER posts — replace href/title/date with real Substack posts -->
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener">
+        <span class="pt">AI doesn't fix bad thinking. It scales it.</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener">
+        <span class="pt">Your best person is doing your worst work</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener">
+        <span class="pt">The invisible plumbing that lets companies hyper-scale</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener">
+        <span class="pt">Why we embed as operators, not consultants</span><span class="pd mono">— placeholder</span></a>
+    </div>
+    <p class="ph-note">↑ placeholder list — drop in your real Substack posts (title, link, date) and delete this note.</p>
+  </section>
+
+  <!-- ============ SUBSCRIBE ============ -->
+  <section class="sub">
+    <h3 class="serif">Subscribe so you don't miss a post</h3>
+    <p>Notes on operations, automation, and building systems that run without you.</p>
+    <div class="subrow">
+      <input id="subEmail" type="email" placeholder="you@company.com" aria-label="Email address" />
+      <button id="subBtn">Subscribe</button>
+    </div>
+    <p class="after" id="subAfter">And follow me on <a href="https://youtube.com/@VibeWithRiz" target="_blank" rel="noopener">YouTube</a> — I'm most active there.</p>
+  </section>
+
+  <footer>© <span id="yr"></span> Rizwan Mahmood · Tallinn · riz@withsoch.com</footer>
+</div>
+
+<script>
+(function(){
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // copy email
+  var copyBtn=document.getElementById('copyEmail');
+  copyBtn.addEventListener('click',function(){
+    var email=copyBtn.getAttribute('data-email'); var orig='Copy email';
+    function done(){ copyBtn.textContent='Copied ✓'; copyBtn.classList.add('copied'); setTimeout(function(){ copyBtn.textContent=orig; copyBtn.classList.remove('copied'); },1600); }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(email).then(done).catch(fallback); }
+    else fallback();
+    function fallback(){ var t=document.createElement('textarea'); t.value=email; document.body.appendChild(t); t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); done(); }
+  });
+
+  // subscribe (placeholder — wire to your provider / Substack embed)
+  var subBtn=document.getElementById('subBtn'), subEmail=document.getElementById('subEmail'), subAfter=document.getElementById('subAfter');
+  subBtn.addEventListener('click',function(){
+    var v=(subEmail.value||'').trim();
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ subEmail.focus(); subEmail.style.borderColor='var(--coral)'; return; }
+    // TODO: POST to your newsletter provider, or replace this block with a Substack embed/redirect
+    subAfter.innerHTML='Thanks — you\u2019re on the list. <span class="mono">(placeholder: wire this to your provider)</span>';
+    subEmail.value='';
+  });
+  subEmail.addEventListener('keydown',function(e){ if(e.key==='Enter') subBtn.click(); });
+})();
+</script>
+</body>
+</html>
