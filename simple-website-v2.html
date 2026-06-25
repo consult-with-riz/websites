@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riz — automation operator</title>
+<meta name="description" content="Riz (Rizwan Mahmood) — AI workflow automation, built by someone who actually ran ops. Co-founder of Soch." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#22332C; --cream:#F3ECDD; --body:#4A4A4A; --muted:#8A857B;
+    --coral:#EA6A47; --coral-d:#CE5430; --amber:#D79A36; --line:#E7E0D2;
+    --paper:#FBF8F0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"DM Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Playfair Display",Georgia,serif}
+  .mono{font-family:"DM Mono",monospace}
+  a{color:inherit}
+  .wrap{max-width:640px;margin:0 auto;padding:clamp(48px,9vh,96px) 24px 80px}
+
+  .top{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .pfp{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:var(--cream);
+      display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:22px}
+  .pfp span{font-family:"Playfair Display",serif;font-size:2.2rem;color:var(--coral)}
+  h1{font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(2.1rem,6vw,2.8rem);letter-spacing:-.02em;line-height:1}
+  .bio{color:var(--body);font-size:1.05rem;margin-top:14px;max-width:32ch}
+  .bio b{color:var(--ink);font-weight:600}
+
+  .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px}
+  .pill{font-family:"DM Mono",monospace;font-size:.8rem;letter-spacing:.02em;text-decoration:none;color:var(--body);
+      border:1px solid var(--line);border-radius:999px;padding:9px 17px;background:#fff;transition:all .2s;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .pill:hover{border-color:var(--coral);color:var(--coral);transform:translateY(-1px)}
+  .pill.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pill.primary:hover{background:var(--coral);border-color:var(--coral);color:#fff}
+  .pill.copied{border-color:var(--coral);color:var(--coral)}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:var(--coral)}
+
+  .sec{margin-top:64px}
+  .sec h2{font-family:"Playfair Display",serif;font-weight:500;font-size:1.7rem;letter-spacing:-.01em;margin-bottom:22px}
+
+  /* timeline grouped by year */
+  .tl{list-style:none;display:flex;flex-direction:column}
+  .tlrow{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid rgba(231,224,210,.6)}
+  .tlrow:last-child{border-bottom:none}
+  .tlrow .yr{font-family:"DM Mono",monospace;font-size:.84rem;color:var(--coral);min-width:52px;flex-shrink:0;padding-top:2px}
+  .evs{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .evs li{position:relative;padding-left:16px;color:var(--body)}
+  .evs li:before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--amber)}
+  .evs li b{color:var(--ink);font-weight:600}
+
+  /* writing */
+  .posts{display:flex;flex-direction:column}
+  .post{display:flex;justify-content:space-between;align-items:baseline;gap:18px;text-decoration:none;
+      padding:16px 0;border-bottom:1px solid rgba(231,224,210,.7);transition:padding-left .2s}
+  .post:hover{padding-left:8px}
+  .post:hover .pt{color:var(--coral)}
+  .pt{font-size:1.05rem;color:var(--ink);font-weight:500;transition:color .2s}
+  .pd{font-family:"DM Mono",monospace;font-size:.76rem;color:var(--muted);flex-shrink:0;white-space:nowrap}
+  .ph-note{font-family:"DM Mono",monospace;font-size:.72rem;color:var(--muted);margin-top:14px;opacity:.8;line-height:1.5}
+
+  /* subscribe (Substack embed) */
+  .sub{margin-top:64px;background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:30px}
+  .sub h3{font-family:"Playfair Display",serif;font-weight:500;font-size:1.35rem;margin-bottom:4px}
+  .sub p{color:var(--body);font-size:.95rem;margin-bottom:18px}
+  .sub-embed{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;min-height:150px}
+  .sub-embed iframe{width:100%;border:0;display:block}
+  .sub .after{font-size:.92rem;color:var(--body);margin-top:14px}
+  .sub .after a{color:var(--coral)}
+
+  footer{margin-top:54px;text-align:center;font-family:"DM Mono",monospace;font-size:.74rem;color:var(--muted);letter-spacing:.04em}
+
+  /* ===== socials modal ===== */
+  .backdrop{position:fixed;inset:0;background:rgba(20,28,24,.55);backdrop-filter:blur(3px);z-index:50;
+      display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+  .backdrop.open{opacity:1}
+  .backdrop[hidden]{display:none}
+  .modal{background:var(--paper);border:1px solid var(--line);border-radius:20px;width:100%;max-width:480px;
+      max-height:86vh;overflow:auto;position:relative;padding:30px;box-shadow:0 30px 80px rgba(0,0,0,.35);
+      transform:translateY(10px);transition:transform .25s}
+  .backdrop.open .modal{transform:none}
+  .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.6rem;line-height:1;
+      color:var(--muted);cursor:pointer;transition:color .2s}
+  .modal-close:hover{color:var(--coral)}
+  .modal h3{font-family:"Playfair Display",serif;font-weight:500;font-size:1.4rem;margin-bottom:18px}
+  .plat-list{display:flex;flex-direction:column;gap:8px}
+  .plat-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .2s;font-family:inherit}
+  .plat-btn:hover{border-color:var(--coral);transform:translateX(2px)}
+  .plat-btn .nm{font-weight:600;color:var(--ink)}
+  .plat-btn .hd{font-family:"DM Mono",monospace;font-size:.76rem;color:var(--muted)}
+  .plat-btn .go{color:var(--coral);font-size:1.1rem}
+  .modal-back{background:none;border:none;font-family:"DM Mono",monospace;font-size:.78rem;color:var(--coral);cursor:pointer;margin-bottom:16px;padding:0}
+  .detail-head{margin-bottom:14px}
+  .detail-head .nm{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:500}
+  .detail-head .hd{font-family:"DM Mono",monospace;font-size:.78rem;color:var(--muted)}
+  .detail-desc{color:var(--body);font-size:.95rem;margin:10px 0 16px}
+  .yt-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
+  .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .yt-placeholder{aspect-ratio:16/9;border:1px dashed var(--line);border-radius:12px;background:var(--cream);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;color:var(--muted)}
+  .yt-placeholder .mono{font-size:.74rem;line-height:1.5}
+  .preview-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center}
+  .preview-card .big{font-family:"Playfair Display",serif;font-size:1.2rem;color:var(--ink);margin-bottom:6px}
+  .preview-card .small{font-size:.88rem;color:var(--body);margin-bottom:16px}
+  .open-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:var(--paper);text-decoration:none;
+      font-family:"DM Mono",monospace;font-size:.8rem;letter-spacing:.03em;border-radius:999px;padding:11px 20px;transition:background .2s}
+  .open-btn:hover{background:var(--coral)}
+  .embed-note{font-family:"DM Mono",monospace;font-size:.68rem;color:var(--muted);margin-top:14px;line-height:1.5;opacity:.8}
+
+  @media(max-width:480px){ .tlrow{flex-direction:column;gap:6px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <!-- swap <span> for: <img class="pfp" src="pfp.jpg" alt="Riz"> -->
+    <div class="pfp"><span>R</span></div>
+    <h1 class="serif">Riz</h1>
+    <p class="bio">AI workflow automation, built by someone who actually ran ops. <b>Co-founder @ Soch.</b> Ex-Wise, ex-Bolt.</p>
+    <nav class="actions">
+      <button class="pill primary" id="openSocials"><span class="dot"></span>Socials</button>
+      <a class="pill" href="https://withsoch.com" target="_blank" rel="noopener">Soch &nearr;</a>
+      <button class="pill" id="copyEmail" data-email="riz@withsoch.com">Copy email</button>
+    </nav>
+  </header>
+
+  <!-- TIMELINE grouped by year -->
+  <section class="sec">
+    <ul class="tl">
+      <li class="tlrow"><span class="yr mono">2025</span>
+        <ul class="evs">
+          <li>Co-founded <b>Soch</b> — AI automation for pre-seed to Series A. 10–20 hrs/week back per team in 60 days.</li>
+          <li>At <b>Wise</b>, built reconciliation automation hitting <b>~92% straight-through matching</b>; month-end close 8 → 3 days.</li>
+        </ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2024</span>
+        <ul class="evs"><li>Ran Operational Excellence across <b>15 countries</b> at Bolt — logistics, regulatory, public policy.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2023</span>
+        <ul class="evs"><li>A/B-tested delivery fees at Bolt for a <b>$2.1M</b> revenue lift in six months.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2022</span>
+        <ul class="evs"><li>Cut courier cost 21% → 14% of GMV at Bolt — <b>saving $3.9M</b> across 20 countries.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2021</span>
+        <ul class="evs"><li>Shipped a certified ELD solution for the Canadian market at <b>Motive</b>.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2020</span>
+        <ul class="evs"><li>Launched a healthcare dispatch service with the Ministry of Health KPK at <b>Careem</b> — <b>3 min → 20 sec</b>.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2017</span>
+        <ul class="evs"><li>Qualified <b>ACCA</b>; BSc Applied Accounting, Oxford Brookes. Earlier: Cambridge.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2015</span>
+        <ul class="evs"><li>Founded a fashion label (Perbal Clothing) and ran it for two years.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">now</span>
+        <ul class="evs"><li>Doing stand-up, building a podcast, and writing — see below.</li></ul>
+      </li>
+    </ul>
+  </section>
+
+  <!-- WRITING (native Substack render in builder; placeholder here) -->
+  <section class="sec">
+    <h2 class="serif">Writing</h2>
+    <div class="posts" id="posts">
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">AI doesn't fix bad thinking. It scales it.</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">Your best person is doing your worst work</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">The invisible plumbing that lets companies hyper-scale</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">Why we embed as operators, not consultants</span><span class="pd mono">— placeholder</span></a>
+    </div>
+    <p class="ph-note">↑ placeholder. In the Next.js build, render these natively from your RSS feed (<b>conversationswithriz.substack.com/feed</b>) with canonical tags back to Substack — fetched server-side so there's no CORS issue. Replace this list when wired.</p>
+  </section>
+
+  <!-- SUBSCRIBE — Substack's own embed -->
+  <section class="sub">
+    <h3 class="serif">Subscribe so you don't miss a post</h3>
+    <p>Notes on operations, automation, and systems that run without you.</p>
+    <div class="sub-embed">
+      <iframe src="https://conversationswithriz.substack.com/embed" height="150" scrolling="no" title="Subscribe to Conversations with Riz"></iframe>
+    </div>
+    <p class="after">And follow me on <a href="https://youtube.com/@VibeWithRiz" target="_blank" rel="noopener">YouTube</a> — I'm most active there.</p>
+  </section>
+
+  <footer>© <span id="yr"></span> Rizwan Mahmood · Tallinn · riz@withsoch.com</footer>
+</div>
+
+<!-- ============ SOCIALS MODAL ============ -->
+<div class="backdrop" id="socialsModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Socials">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div id="modalList">
+      <h3 class="serif">Find me on</h3>
+      <div class="plat-list" id="platList"></div>
+    </div>
+    <div id="modalDetail" hidden>
+      <button class="modal-back" id="modalBack">&larr; all socials</button>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // ----- copy email -----
+  var copyBtn=document.getElementById('copyEmail');
+  copyBtn.addEventListener('click',function(){
+    var email=copyBtn.getAttribute('data-email');
+    function done(){ copyBtn.textContent='Copied ✓'; copyBtn.classList.add('copied'); setTimeout(function(){ copyBtn.textContent='Copy email'; copyBtn.classList.remove('copied'); },1600); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(email).then(done).catch(fb); } else fb();
+    function fb(){ var t=document.createElement('textarea'); t.value=email; document.body.appendChild(t); t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); done(); }
+  });
+
+  // ----- socials config -----
+  // To make YouTube show a LIVE feed: set YT_UPLOADS_ID to your channel's uploads
+  // playlist id (starts "UU…", found via your channel id), OR set YT_VIDEO_ID to a
+  // featured video id. Leave both blank to show the placeholder.
+  var YT_UPLOADS_ID="";   // e.g. "UUxxxxxxxxxxxxxxxxxxxxxx"
+  var YT_VIDEO_ID="";     // e.g. "dQw4w9WgXcQ"
+
+  var SOCIALS=[
+    {key:'youtube', name:'YouTube', handle:'@VibeWithRiz', url:'https://youtube.com/@VibeWithRiz', type:'youtube', desc:'Videos on ops, automation and building systems.'},
+    {key:'linkedin',name:'LinkedIn',handle:'/in/consult-withriz', url:'https://www.linkedin.com/in/consult-withriz', type:'card', desc:'Daily posts on workflow automation and operations.'},
+    {key:'substack',name:'Substack',handle:'conversationswithriz', url:'https://conversationswithriz.substack.com', type:'card', desc:'Long-form writing — Conversations with Riz. (Also rendered in “Writing” above.)'},
+    {key:'instagram',name:'Instagram',handle:'@etz.riz', url:'https://instagram.com/etz.riz', type:'card', desc:'Stand-up clips and behind the scenes.'}
+  ];
+
+  var modal=document.getElementById('socialsModal');
+  var listView=document.getElementById('modalList');
+  var detailView=document.getElementById('modalDetail');
+  var detailContent=document.getElementById('detailContent');
+  var platList=document.getElementById('platList');
+  var lastFocus=null;
+
+  // build platform list
+  SOCIALS.forEach(function(s){
+    var b=document.createElement('button'); b.className='plat-btn';
+    b.innerHTML='<span><span class="nm">'+s.name+'</span><br><span class="hd">'+s.handle+'</span></span><span class="go">&rsaquo;</span>';
+    b.addEventListener('click',function(){ showDetail(s); });
+    platList.appendChild(b);
+  });
+
+  function showList(){ detailView.hidden=true; listView.hidden=false; }
+  function showDetail(s){
+    var html='<div class="detail-head"><div class="nm serif">'+s.name+'</div><div class="hd">'+s.handle+'</div></div>'
+           + '<p class="detail-desc">'+s.desc+'</p>';
+    if(s.type==='youtube'){
+      var src=YT_UPLOADS_ID ? ('https://www.youtube.com/embed/videoseries?list='+YT_UPLOADS_ID)
+            : YT_VIDEO_ID ? ('https://www.youtube.com/embed/'+YT_VIDEO_ID) : '';
+      if(src){
+        html+='<div class="yt-frame"><iframe src="'+src+'" title="YouTube" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>';
+      } else {
+        html+='<div class="yt-placeholder"><div class="serif" style="font-size:1.1rem;color:var(--ink)">YouTube feed embeds here</div>'
+            + '<div class="mono">set <b>YT_UPLOADS_ID</b> (your uploads playlist) or<br><b>YT_VIDEO_ID</b> in the code to go live</div></div>';
+      }
+      html+='<div style="text-align:center;margin-top:16px"><a class="open-btn" href="'+s.url+'" target="_blank" rel="noopener">Open YouTube &nearr;</a></div>';
+    } else {
+      html+='<div class="preview-card"><div class="big serif">'+s.name+'</div><div class="small">'+s.handle+'</div>'
+          + '<a class="open-btn" href="'+s.url+'" target="_blank" rel="noopener">Open '+s.name+' &nearr;</a></div>';
+      if(s.key==='linkedin'||s.key==='instagram'){
+        html+='<p class="embed-note">'+s.name+' doesn\u2019t allow embedding a live feed. To show real posts inline, send me specific post URLs and I\u2019ll embed those individually.</p>';
+      }
+    }
+    detailContent.innerHTML=html;
+    listView.hidden=true; detailView.hidden=false;
+  }
+
+  function openModal(){ lastFocus=document.activeElement; showList(); modal.hidden=false; requestAnimationFrame(function(){ modal.classList.add('open'); }); document.getElementById('modalClose').focus(); document.body.style.overflow='hidden'; }
+  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; setTimeout(function(){ modal.hidden=true; },250); if(lastFocus) lastFocus.focus(); }
+
+  document.getElementById('openSocials').addEventListener('click',openModal);
+  document.getElementById('modalClose').addEventListener('click',closeModal);
+  document.getElementById('modalBack').addEventListener('click',showList);
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!modal.hidden) closeModal(); });
+})();
+</script>
+</body>
+</html>
