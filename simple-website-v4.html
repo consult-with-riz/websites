@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riz — automation operator</title>
+<meta name="description" content="Riz (Rizwan Mahmood) — AI workflow automation, built by someone who actually ran ops. Co-founder of Soch." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#22332C; --cream:#F3ECDD; --body:#4A4A4A; --muted:#8A857B;
+    --coral:#EA6A47; --coral-d:#CE5430; --amber:#D79A36; --line:#E7E0D2;
+    --paper:#FBF8F0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"DM Sans",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Playfair Display",Georgia,serif}
+  .mono{font-family:"DM Mono",monospace}
+  a{color:inherit}
+  .wrap{max-width:640px;margin:0 auto;padding:clamp(48px,9vh,96px) 24px 80px}
+
+  .top{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .pfp{width:96px;height:96px;border-radius:50%;object-fit:cover;border:1px solid var(--line);background:var(--cream);
+      display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:22px}
+  .pfp span{font-family:"Playfair Display",serif;font-size:2.2rem;color:var(--coral)}
+  h1{font-family:"Playfair Display",serif;font-weight:600;font-size:clamp(2.1rem,6vw,2.8rem);letter-spacing:-.02em;line-height:1}
+  .bio{color:var(--body);font-size:1.05rem;margin-top:14px;max-width:32ch}
+  .bio b{color:var(--ink);font-weight:600}
+
+  .actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:26px}
+  .pill{font-family:"DM Mono",monospace;font-size:.8rem;letter-spacing:.02em;text-decoration:none;color:var(--body);
+      border:1px solid var(--line);border-radius:999px;padding:9px 17px;background:#fff;transition:all .2s;cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+  .pill:hover{border-color:var(--coral);color:var(--coral);transform:translateY(-1px)}
+  .pill.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .pill.primary:hover{background:var(--coral);border-color:var(--coral);color:#fff}
+  .pill.copied{border-color:var(--coral);color:var(--coral)}
+  .pill .dot{width:6px;height:6px;border-radius:50%;background:var(--coral)}
+
+  .sec{margin-top:64px}
+  .sec h2{font-family:"Playfair Display",serif;font-weight:500;font-size:1.7rem;letter-spacing:-.01em;margin-bottom:22px}
+
+  /* timeline — draw-on reveal (line centered through the dots) */
+  .tl{list-style:none;position:relative;padding-left:34px}
+  .tl:before{content:"";position:absolute;left:8px;top:12px;bottom:12px;width:2px;background:var(--line)}
+  .tl .spine{position:absolute;left:8px;top:12px;width:2px;background:var(--coral);height:0;transition:height 1.5s cubic-bezier(.4,0,.2,1)}
+  .tlrow{display:flex;gap:18px;padding:15px 0;position:relative;opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+  .tlrow.in{opacity:1;transform:none}
+  /* dot: 12px wide, centered on the 2px line (line center x = 9px from .tl edge; dot center must match) */
+  .tlrow:before{content:"";position:absolute;left:-31px;top:20px;width:12px;height:12px;border-radius:50%;
+      background:var(--paper);border:2px solid var(--line);box-sizing:border-box;transition:border-color .5s ease,box-shadow .5s ease}
+  .tlrow.in:before{border-color:var(--coral);box-shadow:0 0 10px rgba(234,106,71,.45)}
+  .tlrow .yr{font-family:"DM Mono",monospace;font-size:.84rem;color:var(--coral);min-width:48px;flex-shrink:0;padding-top:2px}
+  .evs{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .evs li{position:relative;padding-left:16px;color:var(--body)}
+  .evs li:before{content:"";position:absolute;left:0;top:11px;width:5px;height:5px;border-radius:50%;background:var(--amber)}
+  .evs li b{color:var(--ink);font-weight:600}
+  /* "now" — break the pattern: filled black dot + black button with coral border */
+  .tlrow.now:before{background:var(--ink);border-color:var(--ink)}
+  .tlrow.now.in:before{border-color:var(--ink);box-shadow:0 0 10px rgba(34,51,44,.4)}
+  .tlrow.now .yr{background:var(--ink);color:#fff;border:1px solid var(--coral);border-radius:999px;
+      padding:5px 14px;min-width:0;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;align-self:flex-start;padding-top:5px}
+  @media(max-width:480px){.tlrow{flex-direction:column;gap:4px}}
+
+  /* writing */
+  .posts{display:flex;flex-direction:column}
+  .post{display:flex;justify-content:space-between;align-items:baseline;gap:18px;text-decoration:none;
+      padding:16px 0;border-bottom:1px solid rgba(231,224,210,.7);transition:padding-left .2s}
+  .post:hover{padding-left:8px}
+  .post:hover .pt{color:var(--coral)}
+  .pt{font-size:1.05rem;color:var(--ink);font-weight:500;transition:color .2s}
+  .pd{font-family:"DM Mono",monospace;font-size:.76rem;color:var(--muted);flex-shrink:0;white-space:nowrap}
+  .ph-note{font-family:"DM Mono",monospace;font-size:.72rem;color:var(--muted);margin-top:14px;opacity:.8;line-height:1.5}
+
+  /* subscribe (Substack embed) */
+  .sub{margin-top:64px;background:var(--cream);border:1px solid var(--line);border-radius:18px;padding:30px}
+  .sub h3{font-family:"Playfair Display",serif;font-weight:500;font-size:1.35rem;margin-bottom:4px}
+  .sub p{color:var(--body);font-size:.95rem;margin-bottom:18px}
+  .sub-embed{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;min-height:150px}
+  .sub-embed iframe{width:100%;border:0;display:block}
+  .sub .after{font-size:.92rem;color:var(--body);margin-top:14px}
+  .sub .after a{color:var(--coral)}
+
+  footer{margin-top:54px;text-align:center;font-family:"DM Mono",monospace;font-size:.74rem;color:var(--muted);letter-spacing:.04em}
+
+  /* ===== socials modal ===== */
+  .backdrop{position:fixed;inset:0;background:rgba(20,28,24,.55);backdrop-filter:blur(3px);z-index:50;
+      display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity .25s}
+  .backdrop.open{opacity:1}
+  .backdrop[hidden]{display:none}
+  .modal{background:var(--paper);border:1px solid var(--line);border-radius:20px;width:100%;max-width:480px;
+      max-height:86vh;overflow:auto;position:relative;padding:30px;box-shadow:0 30px 80px rgba(0,0,0,.35);
+      transform:translateY(10px);transition:transform .25s}
+  .backdrop.open .modal{transform:none}
+  .modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.6rem;line-height:1;
+      color:var(--muted);cursor:pointer;transition:color .2s}
+  .modal-close:hover{color:var(--coral)}
+  .modal h3{font-family:"Playfair Display",serif;font-weight:500;font-size:1.4rem;margin-bottom:18px}
+  .plat-list{display:flex;flex-direction:column;gap:8px}
+  .plat-btn{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;text-decoration:none;
+      background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .2s;font-family:inherit}
+  .plat-btn:hover{border-color:var(--coral);transform:translateX(2px)}
+  .plat-btn .nm{font-weight:600;color:var(--ink)}
+  .plat-btn .hd{font-family:"DM Mono",monospace;font-size:.76rem;color:var(--muted)}
+  .plat-btn .go{color:var(--coral);font-size:1.1rem}
+  .modal-back{background:none;border:none;font-family:"DM Mono",monospace;font-size:.78rem;color:var(--coral);cursor:pointer;margin-bottom:16px;padding:0}
+  .detail-head{margin-bottom:14px}
+  .detail-head .nm{font-family:"Playfair Display",serif;font-size:1.3rem;font-weight:500}
+  .detail-head .hd{font-family:"DM Mono",monospace;font-size:.78rem;color:var(--muted)}
+  .detail-desc{color:var(--body);font-size:.95rem;margin:10px 0 16px}
+  .yt-frame{position:relative;width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:#000;border:1px solid var(--line)}
+  .yt-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .yt-placeholder{aspect-ratio:16/9;border:1px dashed var(--line);border-radius:12px;background:var(--cream);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:20px;color:var(--muted)}
+  .yt-placeholder .mono{font-size:.74rem;line-height:1.5}
+  .preview-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px;text-align:center}
+  .preview-card .big{font-family:"Playfair Display",serif;font-size:1.2rem;color:var(--ink);margin-bottom:6px}
+  .preview-card .small{font-size:.88rem;color:var(--body);margin-bottom:16px}
+  .open-btn{display:inline-flex;align-items:center;gap:7px;background:var(--ink);color:var(--paper);text-decoration:none;
+      font-family:"DM Mono",monospace;font-size:.8rem;letter-spacing:.03em;border-radius:999px;padding:11px 20px;transition:background .2s}
+  .open-btn:hover{background:var(--coral)}
+  .embed-note{font-family:"DM Mono",monospace;font-size:.68rem;color:var(--muted);margin-top:14px;line-height:1.5;opacity:.8}
+
+  @media(max-width:480px){ .tlrow{flex-direction:column;gap:6px} }
+
+  /* ===== morph hero (scroll-driven, living system + named stages) ===== */
+  .morph-scroll{position:relative;height:400vh;z-index:1}
+  .morph-stage{position:sticky;top:0;height:100vh;overflow:hidden;
+      background:radial-gradient(120% 90% at 50% 38%,#16241d 0%,#0e1814 45%,#0a110e 100%)}
+  #morph{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .stage-name{position:absolute;z-index:3;left:0;right:0;bottom:6vh;text-align:center;pointer-events:none;
+      display:flex;flex-direction:column;align-items:center;gap:8px;padding:40px 22px 0;
+      background:linear-gradient(to top,rgba(10,17,14,.92) 0%,rgba(10,17,14,.7) 55%,rgba(10,17,14,0) 100%)}
+  @media(max-width:780px){.stage-name{bottom:9vh}}
+  .sn-num{font-family:"DM Mono",monospace;font-size:.74rem;letter-spacing:.4em;color:var(--amber);opacity:.9;transition:opacity .45s ease}
+  .sn-word{font-family:"Playfair Display",serif;font-weight:500;font-size:clamp(2rem,5vw,3.4rem);line-height:1;color:#F6F1E6;letter-spacing:-.01em;transition:opacity .45s ease,transform .45s ease}
+  .sn-word em{font-style:italic;color:var(--coral)}
+  .scrollcue{position:absolute;z-index:3;left:50%;bottom:34px;transform:translateX(-50%);display:flex;flex-direction:column;
+      align-items:center;gap:9px;color:rgba(246,241,230,.62);font-family:"DM Mono",monospace;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;transition:opacity .4s}
+  .scrollcue .ch{width:22px;height:22px;border:1px solid rgba(246,241,230,.4);border-radius:50%;display:flex;align-items:center;justify-content:center;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+  /* the page sits above the hero as it releases */
+  .wrap{position:relative;z-index:2;background:var(--paper)}
+  /* soft seam from dark hero into the light page */
+  .seam{position:relative;z-index:2;height:0}
+  @media (prefers-reduced-motion: reduce){ .scrollcue .ch{animation:none} }
+</style>
+</head>
+<body>
+
+<!-- ====================== MORPH HERO (scroll to reveal the site) ====================== -->
+<section class="morph-scroll" id="morphScroll">
+  <div class="morph-stage">
+    <canvas id="morph"></canvas>
+    <div class="stage-name" id="stageName">
+      <span class="sn-num mono" id="snNum">01</span>
+      <span class="sn-word serif" id="snWord">a person has</span>
+    </div>
+    <div class="scrollcue" id="cue"><span>scroll</span><span class="ch">&darr;</span></div>
+  </div>
+</section>
+
+<div class="wrap">
+
+  <header class="top">
+    <!-- swap <span> for: <img class="pfp" src="pfp.jpg" alt="Riz"> -->
+    <div class="pfp"><span>R</span></div>
+    <h1 class="serif">Riz</h1>
+    <p class="bio">AI workflow automation, built by someone who actually ran ops. <b>Co-founder @ Soch.</b> Ex-Wise, ex-Bolt.</p>
+    <nav class="actions">
+      <button class="pill" id="openSocials">Socials</button>
+      <a class="pill" href="https://withsoch.com" target="_blank" rel="noopener">Soch &nearr;</a>
+      <button class="pill" id="copyEmail" data-email="riz@withsoch.com">Copy email</button>
+    </nav>
+  </header>
+
+  <!-- TIMELINE grouped by year -->
+  <section class="sec">
+    <ul class="tl">
+      <div class="spine" id="tlSpine"></div>
+      <li class="tlrow"><span class="yr mono">2025</span>
+        <ul class="evs">
+          <li>Co-founded <b>Soch</b> — AI automation for pre-seed to Series A. 10–20 hrs/week back per team in 60 days.</li>
+          <li>At <b>Wise</b>, built reconciliation automation hitting <b>~92% straight-through matching</b>; month-end close 8 → 3 days.</li>
+        </ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2024</span>
+        <ul class="evs"><li>Ran Operational Excellence across <b>15 countries</b> at Bolt — logistics, regulatory, public policy.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2023</span>
+        <ul class="evs"><li>A/B-tested delivery fees at Bolt for a <b>$2.1M</b> revenue lift in six months.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2022</span>
+        <ul class="evs"><li>Cut courier cost 21% → 14% of GMV at Bolt — <b>saving $3.9M</b> across 20 countries.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2021</span>
+        <ul class="evs"><li>Shipped a certified ELD solution for the Canadian market at <b>Motive</b>.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2020</span>
+        <ul class="evs"><li>Launched a healthcare dispatch service with the Ministry of Health KPK at <b>Careem</b> — <b>3 min → 20 sec</b>.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2017</span>
+        <ul class="evs"><li>Qualified <b>ACCA</b>; BSc Applied Accounting, Oxford Brookes. Earlier: Cambridge.</li></ul>
+      </li>
+      <li class="tlrow"><span class="yr mono">2015</span>
+        <ul class="evs"><li>Founded a fashion label (Perbal Clothing) and ran it for two years.</li></ul>
+      </li>
+      <li class="tlrow now"><span class="yr mono">now</span>
+        <ul class="evs"><li>Doing AI automations</li><li>Building a podcast</li><li>Writing and creating content</li></ul>
+      </li>
+    </ul>
+  </section>
+
+  <!-- WRITING (native Substack render in builder; placeholder here) -->
+  <section class="sec">
+    <h2 class="serif">Writing</h2>
+    <div class="posts" id="posts">
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">AI doesn't fix bad thinking. It scales it.</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">Your best person is doing your worst work</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">The invisible plumbing that lets companies hyper-scale</span><span class="pd mono">— placeholder</span></a>
+      <a class="post" href="https://conversationswithriz.substack.com" target="_blank" rel="noopener"><span class="pt">Why we embed as operators, not consultants</span><span class="pd mono">— placeholder</span></a>
+    </div>
+    <p class="ph-note">↑ placeholder. In the Next.js build, render these natively from your RSS feed (<b>conversationswithriz.substack.com/feed</b>) with canonical tags back to Substack — fetched server-side so there's no CORS issue. Replace this list when wired.</p>
+  </section>
+
+  <!-- SUBSCRIBE — Substack's own embed -->
+  <section class="sub">
+    <h3 class="serif">Subscribe so you don't miss a post</h3>
+    <p>Notes on operations, automation, and systems that run without you.</p>
+    <div class="sub-embed">
+      <iframe src="https://conversationswithriz.substack.com/embed" height="150" scrolling="no" title="Subscribe to Conversations with Riz"></iframe>
+    </div>
+    <p class="after">And follow me on <a href="https://youtube.com/@VibeWithRiz" target="_blank" rel="noopener">YouTube</a> — I'm most active there.</p>
+  </section>
+
+  <footer>© <span id="yr"></span> Rizwan Mahmood · Tallinn · riz@withsoch.com</footer>
+</div>
+
+<!-- ============ SOCIALS MODAL ============ -->
+<div class="backdrop" id="socialsModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Socials">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <div id="modalList">
+      <h3 class="serif">Find me on</h3>
+      <div class="plat-list" id="platList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // ----- copy email -----
+  var copyBtn=document.getElementById('copyEmail');
+  copyBtn.addEventListener('click',function(){
+    var email=copyBtn.getAttribute('data-email');
+    function done(){ copyBtn.textContent='Copied ✓'; copyBtn.classList.add('copied'); setTimeout(function(){ copyBtn.textContent='Copy email'; copyBtn.classList.remove('copied'); },1600); }
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(email).then(done).catch(fb); } else fb();
+    function fb(){ var t=document.createElement('textarea'); t.value=email; document.body.appendChild(t); t.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(t); done(); }
+  });
+
+  // ----- socials: click a platform -> opens directly in a new tab -----
+  var SOCIALS=[
+    {name:'YouTube', handle:'@VibeWithRiz', url:'https://youtube.com/@VibeWithRiz'},
+    {name:'LinkedIn', handle:'/in/consult-with-riz', url:'https://www.linkedin.com/in/consult-with-riz'},
+    {name:'Substack', handle:'conversationswithriz', url:'https://conversationswithriz.substack.com'},
+    {name:'Instagram', handle:'@etz.riz', url:'https://instagram.com/etz.riz'}
+  ];
+
+  var modal=document.getElementById('socialsModal');
+  var platList=document.getElementById('platList');
+  var lastFocus=null;
+
+  // build platform list as direct links
+  SOCIALS.forEach(function(s){
+    var a=document.createElement('a'); a.className='plat-btn'; a.href=s.url; a.target='_blank'; a.rel='noopener';
+    a.innerHTML='<span><span class="nm">'+s.name+'</span><br><span class="hd">'+s.handle+'</span></span><span class="go">&nearr;</span>';
+    a.addEventListener('click',function(){ closeModal(); });
+    platList.appendChild(a);
+  });
+
+  function openModal(){ lastFocus=document.activeElement; modal.hidden=false; requestAnimationFrame(function(){ modal.classList.add('open'); }); document.getElementById('modalClose').focus(); document.body.style.overflow='hidden'; }
+  function closeModal(){ modal.classList.remove('open'); document.body.style.overflow=''; setTimeout(function(){ modal.hidden=true; },250); if(lastFocus) lastFocus.focus(); }
+
+  document.getElementById('openSocials').addEventListener('click',openModal);
+  document.getElementById('modalClose').addEventListener('click',closeModal);
+  modal.addEventListener('click',function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&!modal.hidden) closeModal(); });
+})();
+</script>
+<script>
+
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* === set this to your headshot to make the FACE stage actually you ===
+     Use a square-ish photo on a plain background, served from the same folder.  */
+  var PORTRAIT_SRC = ""; // e.g. "riz.jpg"
+
+  var cvs = document.getElementById('morph');
+  var ctx = cvs.getContext('2d');
+  var stage = document.querySelector('.morph-stage');
+  var wrap = document.getElementById('morphScroll');
+  var nav = document.getElementById('nav');
+  var cue = document.getElementById('cue');
+  var snNum = document.getElementById('snNum');
+  var snWord = document.getElementById('snWord');
+  var STAGES = [
+    {at:0.06, num:'01', word:'a person has'},
+    {at:0.30, num:'02', word:'a way of thinking'},
+    {at:0.54, num:'03', word:'when wired into systems'},
+    {at:0.76, num:'04', word:'creates <em>leverage</em>'}
+  ];
+  var curStage = -1;
+
+  var W=0,H=0,DPR=1,cx=0,cy=0,R=0,COUNT=0;
+  var parts=[];
+  var S=6;                 // wire strands
+  var loadedImg=null;
+  var progress=0;
+
+  var FACE=[222,206,184], BRAINc=[223,230,234], WIREc=[228,233,236],
+      WIRETIP=[242,176,92], SYSIN=[236,120,74], SYSOUT=[223,230,233];
+
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function smooth(t){t=Math.max(0,Math.min(1,t));return t*t*(3-2*t);}
+  function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+
+  function strand(s,u){
+    var spread=(S>1?(s/(S-1)):0.5)-0.5;
+    var sx=cx+spread*0.10*R, sy=cy+spread*0.06*R;
+    var endAng=(0.06+0.42*(S>1?s/(S-1):0.5))*Math.PI;
+    var ex=cx+Math.cos(endAng)*1.25*R, ey=cy+Math.sin(endAng)*1.25*R;
+    var ctrlAng=endAng-0.28;
+    var cxp=cx+Math.cos(ctrlAng)*0.62*R+spread*0.22*R;
+    var cyp=cy+Math.sin(ctrlAng)*0.62*R-0.16*R;
+    var mu=1-u;
+    return { x:mu*mu*sx+2*mu*u*cxp+u*u*ex, y:mu*mu*sy+2*mu*u*cyp+u*u*ey };
+  }
+
+  function faceTarget(i,N){
+    var rx=0.58*R, ry=0.80*R, t=i/N, jx=(Math.random()-0.5), x,y;
+    if(t<0.20){ var a=Math.PI+Math.random()*Math.PI, rr=0.85+Math.random()*0.22;
+      x=Math.cos(a)*rx*rr; y=Math.sin(a)*ry*rr-0.06*R; if(y>0)y=-y*0.3;
+    } else if(t<0.46){ var a2=Math.random()*Math.PI*2, r2=Math.sqrt(Math.random());
+      x=Math.cos(a2)*rx*r2*0.92; y=Math.sin(a2)*ry*r2*0.92; if(y<0)y*=0.7; else y*=1.05;
+    } else if(t<0.62){ var a3=Math.random()*Math.PI*2;
+      x=Math.cos(a3)*rx+jx*5; y=Math.sin(a3)*ry+(Math.random()-0.5)*5;
+    } else if(t<0.74){ var side=(Math.random()<0.5?-1:1);
+      x=side*0.24*R+(Math.random()-0.5)*0.10*R; y=-0.10*R+(Math.random()-0.5)*0.05*R;
+    } else if(t<0.82){ x=jx*0.05*R; y=0.04*R+Math.random()*0.16*R;
+    } else { x=jx*0.22*R; y=0.30*R+(Math.random()-0.5)*0.05*R; }
+    return { x:cx+x, y:cy+y };
+  }
+
+  function build(){
+    parts=[];
+    var perStrand=Math.ceil(COUNT/S);
+    for(var i=0;i<COUNT;i++){
+      var p={};
+      var f=faceTarget(i,COUNT); p.fx=f.x; p.fy=f.y; p.cF=FACE.slice();
+      // brain whorl
+      var tb=i/COUNT, ang=tb*Math.PI*2*5, r=0.16*R+0.72*R*Math.sqrt(tb);
+      r+=0.045*R*Math.sin(ang*3);
+      p.bx=cx+Math.cos(ang)*r; p.by=cy+Math.sin(ang)*r*0.92;
+      // wires
+      var s=i%S, u=Math.floor(i/S)/perStrand, pt=strand(s,u), pt2=strand(s,Math.min(1,u+0.012));
+      p.wx=pt.x; p.wy=pt.y; p.wang=Math.atan2(pt2.y-pt.y,pt2.x-pt.x); p.wlen=4+11*u; p.wTip=u>0.72;
+      // system phyllotaxis
+      var a4=i*2.39996323, rr2=R*0.95*Math.sqrt(i/COUNT);
+      p.sx=cx+Math.cos(a4)*rr2; p.sy=cy+Math.sin(a4)*rr2; p.sIn=rr2<R*0.34;
+      // colors
+      p.cB=BRAINc; p.cW=p.wTip?WIRETIP:WIREc; p.cS=p.sIn?SYSIN:SYSOUT;
+      p.seed=Math.random()*6.283; p.r=0.7+Math.random()*0.95;
+      parts.push(p);
+    }
+    if(loadedImg) sampleFace(loadedImg);
+  }
+
+  function sampleFace(img){
+    var bw=Math.max(40,Math.round(1.3*R)), bh=Math.max(40,Math.round(1.6*R));
+    var off=document.createElement('canvas'); off.width=bw; off.height=bh;
+    var o=off.getContext('2d');
+    var ar=img.width/img.height, br=bw/bh, dw,dh;
+    if(ar>br){dh=bh;dw=bh*ar;} else {dw=bw;dh=bw/ar;}
+    o.drawImage(img,(bw-dw)/2,(bh-dh)/2,dw,dh);
+    var data;
+    try{ data=o.getImageData(0,0,bw,bh).data; }catch(e){ return; } // CORS guard
+    var cand=[];
+    for(var py=0;py<bh;py+=2)for(var px=0;px<bw;px+=2){
+      var idx=(py*bw+px)*4, al=data[idx+3]; if(al<100)continue;
+      var rr=data[idx],gg=data[idx+1],bb=data[idx+2], lum=(rr+gg+bb)/3;
+      if(lum>238)continue;
+      cand.push([px,py,rr,gg,bb]);
+    }
+    if(!cand.length)return;
+    for(var i=0;i<COUNT;i++){
+      var c=cand[(Math.random()*cand.length)|0];
+      parts[i].fx=cx+(c[0]-bw/2); parts[i].fy=cy+(c[1]-bh/2); parts[i].cF=[c[2],c[3],c[4]];
+    }
+  }
+
+  function resize(){
+    W=stage.clientWidth; H=stage.clientHeight; DPR=Math.min(window.devicePixelRatio||1,2);
+    cvs.width=W*DPR; cvs.height=H*DPR; cvs.style.width=W+'px'; cvs.style.height=H+'px';
+    ctx.setTransform(DPR,0,0,DPR,0,0);
+    cx=W/2; cy=H*0.42; R=0.4*Math.min(W,H);
+    COUNT=Math.max(500,Math.min(2200,Math.floor((W*H)/2600)));
+    build();
+    draw();
+  }
+
+  function posStage(p,k){ return k===0?[p.fx,p.fy]:k===1?[p.bx,p.by]:k===2?[p.wx,p.wy]:[p.sx,p.sy]; }
+  function colStage(p,k){ return k===0?p.cF:k===1?p.cB:k===2?p.cW:p.cS; }
+
+  function draw(time){
+    time=time||0;
+    ctx.clearRect(0,0,W,H);
+    // morph spreads across most of the scroll; only a short, calm hold at the end
+    var mp = clamp(progress/0.88, 0, 1);
+    var a,b,local;
+    if(mp<0.34){a=0;b=1;local=smooth(mp/0.34);}
+    else if(mp<0.68){a=1;b=2;local=smooth((mp-0.34)/0.34);}
+    else {a=2;b=3;local=smooth(clamp((mp-0.68)/0.32,0,1));}
+    var elong=0; if(b===2)elong=local; else if(a===2)elong=1-local;
+
+    // core glow toward system
+    var g=smooth(clamp((mp-0.66)/0.34,0,1));
+    ctx.globalCompositeOperation='lighter';
+    if(g>0){
+      var grd=ctx.createRadialGradient(cx,cy,0,cx,cy,R*0.7);
+      grd.addColorStop(0,'rgba(248,168,72,'+(0.55*g)+')');
+      grd.addColorStop(0.45,'rgba(235,110,71,'+(0.18*g)+')');
+      grd.addColorStop(1,'rgba(235,110,71,0)');
+      ctx.fillStyle=grd; ctx.fillRect(0,0,W,H);
+    }
+
+    var drift = reduce?0:1;
+    for(var i=0;i<COUNT;i++){
+      var p=parts[i];
+      var pa=posStage(p,a), pb=posStage(p,b);
+      var x=lerp(pa[0],pb[0],local), y=lerp(pa[1],pb[1],local);
+      if(drift){ x+=Math.sin(time*0.0009+p.seed)*1.5; y+=Math.cos(time*0.0011+p.seed*1.3)*1.5; }
+      var ca=colStage(p,a), cb=colStage(p,b);
+      var cr=lerp(ca[0],cb[0],local)|0, cg=lerp(ca[1],cb[1],local)|0, cbl=lerp(ca[2],cb[2],local)|0;
+      if(elong>0.16){
+        var L=p.wlen*elong, dx=Math.cos(p.wang)*L*0.5, dy=Math.sin(p.wang)*L*0.5;
+        ctx.strokeStyle='rgba('+cr+','+cg+','+cbl+','+(0.85)+')';
+        ctx.lineWidth=p.r*1.1; ctx.lineCap='round';
+        ctx.beginPath(); ctx.moveTo(x-dx,y-dy); ctx.lineTo(x+dx,y+dy); ctx.stroke();
+      } else {
+        var alpha=0.92;
+        ctx.fillStyle='rgba('+cr+','+cg+','+cbl+','+alpha+')';
+        ctx.beginPath(); ctx.arc(x,y,p.r,0,6.283); ctx.fill();
+      }
+    }
+
+    // === LIVING SYSTEM: once formed, the core keeps gently running ===
+    var alive = smooth(clamp((mp-0.86)/0.14,0,1));
+    if(alive>0 && !reduce){
+      ctx.globalCompositeOperation='lighter';
+      // breathing core
+      var breathe = 1 + 0.06*Math.sin(time*0.0016);
+      var coreR = R*0.30*breathe;
+      var cg2 = ctx.createRadialGradient(cx,cy,0,cx,cy,coreR);
+      cg2.addColorStop(0,'rgba(248,168,72,'+(0.5*alive)+')');
+      cg2.addColorStop(1,'rgba(235,110,71,0)');
+      ctx.fillStyle=cg2; ctx.beginPath(); ctx.arc(cx,cy,coreR,0,6.283); ctx.fill();
+      // packets travelling outward along spokes
+      var NP=10;
+      for(var k=0;k<NP;k++){
+        var ang = k*2.39996323 + time*0.00018;
+        var phase = ((time*0.0004)+(k/NP))%1;
+        var rr = R*0.10 + phase*R*0.92;
+        var px = cx+Math.cos(ang)*rr, py = cy+Math.sin(ang)*rr;
+        var fade = (1-phase)*alive;
+        ctx.fillStyle='rgba(242,176,92,'+(0.9*fade)+')';
+        ctx.beginPath(); ctx.arc(px,py,2.2,0,6.283); ctx.fill();
+        ctx.strokeStyle='rgba(242,176,92,'+(0.18*fade)+')';
+        ctx.lineWidth=1; ctx.beginPath();
+        ctx.moveTo(cx+Math.cos(ang)*R*0.10, cy+Math.sin(ang)*R*0.10);
+        ctx.lineTo(px,py); ctx.stroke();
+      }
+    }
+    ctx.globalCompositeOperation='source-over';
+  }
+
+  function updateOverlay(){
+    var idx=0;
+    for(var i=0;i<STAGES.length;i++){ if(progress>=STAGES[i].at-0.14) idx=i; }
+    if(idx!==curStage){
+      curStage=idx;
+      snWord.style.opacity=0; snNum.style.opacity=0;
+      snWord.style.transform='translateY(8px)';
+      setTimeout(function(){
+        snNum.textContent=STAGES[idx].num;
+        snWord.innerHTML=STAGES[idx].word;
+        snWord.style.opacity=1; snNum.style.opacity=.9;
+        snWord.style.transform='translateY(0)';
+      },140);
+    }
+    cue.style.opacity = progress<0.04?1:0;
+  }
+
+  function computeProgress(){
+    var total=wrap.offsetHeight-window.innerHeight;
+    progress=total>0?clamp((window.scrollY-wrap.offsetTop)/total,0,1):0;
+    if(nav) nav.classList.toggle('scrolled', window.scrollY > (wrap.offsetHeight-window.innerHeight*0.55));
+    updateOverlay();
+  }
+
+  // loop
+  function loop(t){ draw(t); requestAnimationFrame(loop); }
+
+  window.addEventListener('scroll', computeProgress, {passive:true});
+  window.addEventListener('resize', function(){ resize(); computeProgress(); });
+
+  if(PORTRAIT_SRC){
+    var im=new Image(); im.crossOrigin='anonymous';
+    im.onload=function(){ loadedImg=im; sampleFace(im); };
+    im.src=PORTRAIT_SRC;
+  }
+
+  resize(); computeProgress();
+  if(reduce){ /* draw on scroll only */ window.addEventListener('scroll', function(){draw(0);},{passive:true}); draw(0); }
+  else { requestAnimationFrame(loop); }
+})();
+
+</script>
+<script>
+/* timeline draw-on reveal */
+(function(){
+  var rows=[].slice.call(document.querySelectorAll('.tlrow'));
+  var spine=document.getElementById('tlSpine');
+  var tl=document.querySelector('.tl');
+  if(!rows.length) return;
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ var i=rows.indexOf(e.target); setTimeout(function(){ e.target.classList.add('in'); }, i*90); io.unobserve(e.target); } });
+  },{threshold:.2});
+  rows.forEach(function(r){ io.observe(r); });
+  var sio=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ spine.style.height=(tl.offsetHeight-24)+'px'; sio.disconnect(); } });
+  },{threshold:.1});
+  sio.observe(tl);
+})();
+</script>
+</body>
+</html>
