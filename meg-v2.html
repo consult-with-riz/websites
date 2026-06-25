@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Meghaan Lurtz — the human side of money</title>
+<meta name="description" content="Dr. Meghaan Lurtz — the psychology of financial planning. Pitch prototype." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#FBF7EF; --paper:#FFFDF8; --ink:#2B2622; --body:#574E44; --muted:#9A8E7C;
+    --accent:#B5683C; --accent2:#7C8B6F; --line:#E8DFD0; --radius:14px;
+    --f:'Plus Jakarta Sans',system-ui,sans-serif; --fm:'DM Mono',monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--f);background:var(--bg);color:var(--body);line-height:1.65;font-size:1.07rem;-webkit-font-smoothing:antialiased}
+  .fm{font-family:var(--fm)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:680px;margin:0 auto;padding:clamp(40px,8vh,86px) 24px 90px}
+
+  /* ---- question hero (simple cycler) ---- */
+  .qhero{min-height:74vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .qhero .eyebrow{font-family:var(--fm);font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:28px}
+  .qhero .q{font-weight:600;font-size:clamp(2.1rem,5.2vw,3.2rem);color:var(--ink);line-height:1.2;letter-spacing:-.02em;
+      width:100%;min-height:6em;display:flex;align-items:center;justify-content:center}
+  .qhero .q #q{display:block;max-width:20ch;margin:0 auto;transition:opacity .5s ease,transform .5s ease}
+  .qhero .q #q.out{opacity:0;transform:translateY(10px)}
+  .qhero .qbtn{margin-top:32px;font-family:var(--fm);font-size:.82rem;letter-spacing:.05em;background:var(--accent);color:#fff;
+      border:1px solid var(--accent);border-radius:var(--radius);padding:13px 24px;cursor:pointer;transition:all .2s}
+  .qhero .qbtn:hover{filter:brightness(1.06);transform:translateY(-1px)}
+  .qhero .qfoot{margin-top:24px;font-style:italic;color:var(--muted);font-size:1.05rem;max-width:38ch}
+
+  /* ---- identity strip ---- */
+  .ident{text-align:center;margin-top:8px}
+  .ident h1{font-weight:800;font-size:clamp(2.1rem,5.5vw,3rem);color:var(--ink);letter-spacing:-.03em;line-height:1}
+  .ident .cred{font-family:var(--fm);font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-top:14px}
+  .ident .cta{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:24px}
+  .btn{font-family:var(--fm);font-size:.82rem;letter-spacing:.04em;border-radius:var(--radius);padding:12px 22px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;transition:all .2s}
+  .btn:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .btn.solid{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .btn.solid:hover{filter:brightness(1.06);color:#fff}
+
+  /* ---- sections ---- */
+  .sec{margin-top:64px}
+  .sec-label{font-family:var(--fm);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+  h2{font-weight:700;font-size:clamp(1.6rem,3.6vw,2.1rem);color:var(--ink);letter-spacing:-.02em;line-height:1.1;margin-bottom:22px}
+
+  /* pill rows (credentials + press) */
+  .tagrow{display:flex;flex-wrap:wrap;gap:11px}
+  .tag{font-family:var(--fm);font-size:.84rem;letter-spacing:.01em;color:var(--ink);background:var(--paper);
+      border:1px solid var(--line);border-radius:999px;padding:11px 18px;transition:all .2s;cursor:default;line-height:1}
+  .tag:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px);box-shadow:0 6px 16px rgba(181,104,60,.12)}
+  .tag.press{text-transform:uppercase;font-size:.76rem;letter-spacing:.08em;color:var(--body)}
+
+  /* about */
+  .about p{font-size:1.24rem;color:var(--body);line-height:1.7}
+  .about .quote{font-weight:700;font-size:clamp(1.7rem,3.8vw,2.4rem);color:var(--ink);margin-top:28px;line-height:1.25;letter-spacing:-.02em}
+  .about .quote em{font-style:normal;color:var(--accent)}
+
+  /* sessions */
+  .topics{display:flex;flex-direction:column}
+  .topic{padding:20px 0;border-bottom:1px solid var(--line)}
+  .topic:last-child{border-bottom:none}
+  .topic .tt{font-weight:600;font-size:1.5rem;color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .topic .td{color:var(--body);margin-top:6px;font-size:1.05rem}
+
+  /* writing */
+  .posts{display:flex;flex-direction:column}
+  .post{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:17px 0;border-bottom:1px solid var(--line);transition:padding-left .2s}
+  .post:hover{padding-left:8px} .post:hover .pt{color:var(--accent)}
+  .pt{font-size:1.2rem;color:var(--ink);font-weight:500;transition:color .2s}
+  .pd{font-family:var(--fm);font-size:.76rem;color:var(--muted);white-space:nowrap}
+  .ph-note{font-family:var(--fm);font-size:.72rem;color:var(--muted);margin-top:14px;opacity:.8;line-height:1.5}
+
+  /* subscribe */
+  .sub{margin-top:64px;background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:32px}
+  .sub h2{font-size:1.5rem;margin-bottom:6px}
+  .sub p{color:var(--body);font-size:1rem;margin-bottom:18px}
+  .sub-embed{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:120px}
+  .sub-embed iframe{width:100%;border:0;display:block}
+
+  footer{margin-top:56px;text-align:center;font-family:var(--fm);font-size:.74rem;color:var(--muted);letter-spacing:.03em;line-height:1.7}
+
+  @media(max-width:480px){.post{flex-direction:column;gap:4px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- QUESTION HERO -->
+  <header class="qhero">
+    <p class="eyebrow">a question, at the right time</p>
+    <div class="q"><span id="q">What is your earliest money memory?</span></div>
+    <button class="qbtn fm" id="qbtn">Ask me another &rarr;</button>
+    <p class="qfoot">The work isn&rsquo;t the question. It&rsquo;s knowing when to ask it &mdash; and being ready for the answer.</p>
+  </header>
+
+  <!-- IDENTITY -->
+  <section class="ident">
+    <h1>Meghaan Lurtz</h1>
+    <p class="cred">Ph.D., FBS&trade; &middot; Partner, Shaping Wealth</p>
+    <div class="cta">
+      <a class="btn solid" href="https://www.kitces.com/speaking/meghaan-lurtz/" target="_blank" rel="noopener">Book to speak</a>
+      <a class="btn" href="#subscribe">Subscribe</a>
+      <a class="btn" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener">Read</a>
+    </div>
+  </section>
+
+  <!-- CREDENTIALS & PARTNERSHIPS (pills) -->
+  <section class="sec">
+    <p class="sec-label">Credentials &amp; partnerships</p>
+    <div class="tagrow">
+      <span class="tag">Shaping Wealth</span>
+      <span class="tag">Kansas State University</span>
+      <span class="tag">Columbia University</span>
+      <span class="tag">Financial Therapy Association</span>
+      <span class="tag">Kitces.com</span>
+      <span class="tag">Financial Psychology Institute Europe</span>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="sec about">
+    <p class="sec-label">About</p>
+    <p>Dr. Meghaan Lurtz is a global expert on the psychology of financial planning and the intersection of money and wellbeing. A Partner at Shaping Wealth, she teaches Financial Psychology at Columbia University and advanced financial planning at Kansas State, and is a past president of the Financial Therapy Association. She writes at Kitces.com and in her newsletter, (Less) Lonely Money.</p>
+    <p class="quote">&ldquo;The best questions aren&rsquo;t clever. They&rsquo;re <em>kind.</em>&rdquo;</p>
+  </section>
+
+  <!-- SESSIONS -->
+  <section class="sec">
+    <p class="sec-label">Speaking</p>
+    <h2>Sessions &amp; keynotes</h2>
+    <div class="topics">
+      <div class="topic"><div class="tt">The Art of the Question</div><div class="td">What to ask a client, and &mdash; just as important &mdash; when to ask it.</div></div>
+      <div class="topic"><div class="tt">Holding Space Without Overreach</div><div class="td">Financial therapy in practice: depth, pacing, and the window of tolerance.</div></div>
+      <div class="topic"><div class="tt">Money Scripts &amp; Money Memories</div><div class="td">The psychology beneath the plan, and where our beliefs about money begin.</div></div>
+      <div class="topic"><div class="tt">Bearing Witness</div><div class="td">Listening as the advisor&rsquo;s core skill &mdash; and why it&rsquo;s the real magic.</div></div>
+    </div>
+    <div style="margin-top:26px"><a class="btn solid" href="https://www.kitces.com/speaking/meghaan-lurtz/" target="_blank" rel="noopener">Book Meghaan to speak</a></div>
+  </section>
+
+  <!-- WRITING -->
+  <section class="sec">
+    <p class="sec-label">Writing</p>
+    <h2>(Less) Lonely Money</h2>
+    <div class="posts">
+      <a class="post" href="https://meghaanlurtz.substack.com/p/good-question-wrong-time" target="_blank" rel="noopener"><span class="pt">Good Question. Wrong Time.</span><span class="pd">Sep 2025</span></a>
+      <a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">When money starts to feel like it&rsquo;s yours</span><span class="pd">&mdash; placeholder</span></a>
+      <a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">The vulnerability hangover in the first meeting</span><span class="pd">&mdash; placeholder</span></a>
+      <a class="post" href="https://meghaanlurtz.substack.com" target="_blank" rel="noopener"><span class="pt">Start with agency, not origin story</span><span class="pd">&mdash; placeholder</span></a>
+    </div>
+    <p class="ph-note">Placeholders marked above &mdash; in the build, render posts natively from the Substack RSS (meghaanlurtz.substack.com/feed) with canonical tags back to Substack.</p>
+  </section>
+
+  <!-- AS SEEN IN (pills) -->
+  <section class="sec">
+    <p class="sec-label">As seen in</p>
+    <div class="tagrow">
+      <span class="tag press">Wall Street Journal</span>
+      <span class="tag press">The New York Times</span>
+      <span class="tag press">BBC</span>
+      <span class="tag press">New York Magazine</span>
+      <span class="tag press">MDRT</span>
+      <span class="tag press">CFPB</span>
+    </div>
+  </section>
+
+  <!-- SUBSCRIBE -->
+  <section class="sub" id="subscribe">
+    <h2>Subscribe to (Less) Lonely Money</h2>
+    <p>Essays on money, emotion, and the conversations that change outcomes.</p>
+    <div class="sub-embed"><iframe src="https://meghaanlurtz.substack.com/embed" height="150" scrolling="no" title="Subscribe"></iframe></div>
+  </section>
+
+  <footer>&copy; <span id="yr"></span> Meghaan R. Lurtz, Ph.D. &middot; (Less) Lonely Money<br>Placeholder pitch prototype &mdash; swap headshot &amp; verify links before publishing.</footer>
+</div>
+
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+(function(){
+  var QS=["What is your earliest money memory?",
+          "When did money start to feel like it was yours to manage?",
+          "Tell me about your first job.",
+          "When did you first feel confident &mdash; or unsure &mdash; about a money decision?",
+          "What&rsquo;s the first money decision you remember making on your own?",
+          "If I gave you $100 as a kid, what would you have done with it?",
+          "Who taught you the most about money &mdash; and what stuck?"];
+  var q=document.getElementById('q'), btn=document.getElementById('qbtn'), i=0;
+  btn.addEventListener('click',function(){
+    q.classList.add('out');
+    setTimeout(function(){ i=(i+1)%QS.length; q.innerHTML=QS[i]; q.classList.remove('out'); },460);
+  });
+})();
+</script>
+</body>
+</html>
